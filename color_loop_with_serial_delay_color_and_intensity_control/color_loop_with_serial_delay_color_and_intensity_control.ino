@@ -20,7 +20,7 @@ Adafruit_NeoPixel strip = Adafruit_NeoPixel(50, PIN, NEO_BRG + NEO_KHZ800);
 void setup() {
   strip.begin();
   strip.show(); // Initialize all pixels to 'off'
-  strip.setBrightness(255);
+  strip.setBrightness(64);
   
   for (unsigned int i=0; i<strip.numPixels(); i++){
     strip.setPixelColor(i, 0);
@@ -49,6 +49,18 @@ void loop() {
 
    }
 
+   for (unsigned int i=strip.numPixels()-1; i>19; i--){
+      
+      strip.setPixelColor(i, led_color);
+      strip.show();
+      delay(wait_time_ms);
+      
+      strip.setPixelColor(i, 0);
+      strip.show();
+      
+      check_serial();  
+
+   }
    
   
 }
@@ -72,29 +84,24 @@ void check_serial(){
     String cmd_data = readString.substring(7);
     
       if (command.equals("SETCOL")) {
-        
-        char hex_digits[7];
-        hex_digits[6] = '\0';
-        
-        String hex_string = "0x";
-        hex_string.concat(cmd_data);
-        Serial.println(hex_string);
-        Serial.println(hex_string.toInt());
-        
-        
-        hex_string.toCharArray(hex_digits, 7);
-        
-        Serial.println(hex_digits);
-        
-        Serial.print("setting color to: ");
-        Serial.println(strtoul(hex_digits, NULL, 0));
-        
+  
+         Serial.println(cmd_data);
+  
+         // just create the 24-bit color on the sending end       
+         led_color = cmd_data.toInt();
+         
+         Serial.print("Color set to ");
+         Serial.print(cmd_data.toInt());
+         Serial.print("ms.");      
+       
       }
       else if (command.equals("SETPWR")) {
         
-        Serial.print("Turning LEDs '");
+        Serial.print("Turning LED brightness to '");
         Serial.print(cmd_data);
         Serial.println("'");
+        
+        strip.setBrightness(cmd_data.toInt());
 
       }
       else if (command.equals("SETDLY")) {
