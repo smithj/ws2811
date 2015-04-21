@@ -7,10 +7,10 @@
 ///////////////////////////////////////////////////////////////////////////////////////////
 #include "FastLED.h"
 
-#define NUM_LEDS          25
+#define NUM_LEDS          50
 #define DATA_PIN          8
 #define COLOR_ORDER       BGR // GRB
-#define CHIPSET           NEOPIXEL
+#define CHIPSET           WS2811
 #define BRIGHTNESS        128
 #define GRAVITY           -9.81              // Downward (negative) acceleration of gravity in m/s^2
 #define h0                1                  // Starting height, in meters, of the ball (strip length)
@@ -39,6 +39,13 @@ void setup() {
     tCycle[i] = 0;
     COR[i] = 0.90 - float(i)/pow(NUM_BALLS,2); 
   }
+  
+    
+  pinMode(2, OUTPUT);
+  digitalWrite(2, HIGH);
+  
+  pinMode(9,OUTPUT);
+  analogWrite(9,128);
 }
 
 void loop() {

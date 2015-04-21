@@ -63,8 +63,8 @@
 
 #define PIN 8  // pin the ws2811 strip is connected to 
 
-#define FIRST_LED 29   // first led in strip to use
-#define LAST_LED 30    // last led in strip to use
+#define FIRST_LED 0   // first led in strip to use
+#define LAST_LED 49    // last led in strip to use
 
 // Parameter 1 = number of pixels in strip
 // Parameter 2 = Arduino pin number (most are valid)
@@ -73,7 +73,7 @@
 //   NEO_KHZ400  400 KHz (classic 'v1' (not v2) FLORA pixels, WS2811 drivers)
 //   NEO_GRB     Pixels are wired for GRB bitstream (most NeoPixel products)
 //   NEO_RGB     Pixels are wired for RGB bitstream (v1 FLORA pixels, not v2)
-Adafruit_NeoPixel strip = Adafruit_NeoPixel(51, PIN, NEO_RGB + NEO_KHZ800);
+Adafruit_NeoPixel strip = Adafruit_NeoPixel(50, PIN, NEO_RGB + NEO_KHZ800);
 
 // IMPORTANT: To reduce NeoPixel burnout risk, add 1000 uF capacitor across
 // pixel power leads, add 300 - 500 Ohm resistor on first pixel's data input
@@ -123,6 +123,13 @@ void setup()
     strip.setPixelColor(i, 0);
   }
   
+  
+      
+  pinMode(2, OUTPUT);
+  digitalWrite(2, HIGH);
+  
+  pinMode(9,OUTPUT);
+  analogWrite(9,128);
 
   if (DEBUG) {           // If we want to see values for debugging...
     Serial.begin(9600);  // ...set up the serial ouput 

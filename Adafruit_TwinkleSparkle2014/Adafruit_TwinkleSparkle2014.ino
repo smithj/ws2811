@@ -7,19 +7,20 @@
 //  Kriegsman whose "Fire2012" simulation inspired this program.
 //  Some of Mark's original code and comments persist in this work.
 ///////////////////////////////////////////////////////////////////////////////////////////
-#include "FastLED.h"
+
+#include <Adafruit_NeoPixel.h>
+#include <pixeltypes.h>
+#include <colorutils.h>
 
 #define NUM_LEDS           50
 #define DATA_PIN           8
-#define CHIPSET            WS2811  // make sure you enter the correct chipset
 #define COLOR_ORDER        BRG       // and RBG order
-#define BRIGHTNESS         250
+#define BRIGHTNESS         128
 #define FRAMES_PER_SECOND  30
 #define COOLING            5         // controls how quickly LEDs dim
-#define TWINKLING          600       // controls how many new LEDs twinkle
+#define TWINKLING          6       // controls how many new LEDs twinkle
 #define FLICKER            50        // controls how "flickery" each individual LED is
 
-CRGB leds[NUM_LEDS];
 
 static int beatInterval =  8912;     // the interval at which you want the strip to "sparkle"
 long nextBeat =            0;
@@ -31,13 +32,20 @@ long deltaTimeSparkle =    0;
 boolean beatStarted =      false;
 
 static byte heat[NUM_LEDS];
+
+Adafruit_NeoPixel strip = Adafruit_NeoPixel(50, 8, NEO_BRG + NEO_KHZ800);
+
 ///////////////////////////////////////////////////////////////////////////////////////////
 
 void setup() {
   // sanity check delay - allows reprogramming if accidently blowing power w/leds
   delay(3000);
-  FastLED.addLeds<CHIPSET, DATA_PIN, COLOR_ORDER>(leds, NUM_LEDS);
-  LEDS.setBrightness(BRIGHTNESS);
+  
+  strip.begin();
+  strip.show();
+  
+  strip.setBrightness(128);
+  
   Serial.begin(115200);
   delay(100);
   Serial.flush();
@@ -82,7 +90,7 @@ void loop()
   if ( deltaTimeTwinkle > 0 ) {
     Twinkle();
   }
-  FastLED.show(); // display this frame
+  strip.show(); // display this frame
 }
 
 
@@ -122,7 +130,15 @@ void Twinkle()
   // Step 5. Map from heat cells to LED colors
   for( int j = 0; j < NUM_LEDS; j++) 
   {
-    leds[j] = HeatColor( heat[j] );
+    
+    CRGB pixel_color = HeatColor(heat[j]);
+    
+    strip.setPixelColor(j, pixel_color);
+  
+
+
+
+
   }
   nextTwinkle += 1000 / FRAMES_PER_SECOND ; // assign the next time Twinkle() should happen
 }
@@ -144,7 +160,7 @@ void Sparkle() {
   loops++ ;
 }
 
-
+/*
 //Play with this for different strip colors
 CHSV HeatColor( uint8_t temperature)
 {
@@ -154,7 +170,7 @@ CHSV HeatColor( uint8_t temperature)
   heatcolor.value = temperature; 
   return heatcolor;
 }
-
+*/
 // Use Mark Krigsman's orignal "HeatColor" code if you want to 
 // get different colors at differet "temperatures"
 /*
