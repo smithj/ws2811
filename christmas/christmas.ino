@@ -51,8 +51,8 @@ void loop() {
    while (true){
       strip.setPixelColor(low, PIXEL_FG_COLOR);
       strip.setPixelColor(high, PIXEL_FG_COLOR);
-      strip.setPixelColor(low+1, PIXEL_FG_COLOR);
-      strip.setPixelColor(high-1, PIXEL_FG_COLOR);      strip.show();
+      strip.setPixelColor(low+2, PIXEL_FG_COLOR);
+      strip.setPixelColor(high-2, PIXEL_FG_COLOR);      strip.show();
 
       delay(80);
 
