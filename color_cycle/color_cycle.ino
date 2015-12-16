@@ -5,13 +5,18 @@
 
 extern const uint8_t gamma[];
 
-Adafruit_NeoPixel strip = Adafruit_NeoPixel(50, PIN, NEO_BRG + NEO_KHZ800);
+Adafruit_NeoPixel strip = Adafruit_NeoPixel(100, PIN, NEO_BRG + NEO_KHZ800);
+
+Adafruit_NeoPixel strip2 = Adafruit_NeoPixel(50, 8, NEO_BRG + NEO_KHZ800);
+
 void setup() {
   
    strip.begin();
    strip.show(); // Initialize all pixels to 'off'
-   strip.setBrightness(255);
+   strip.setBrightness(64);
    
+   strip2.begin();
+   strip2.show();
    
    Serial.begin(9600);
    
@@ -20,51 +25,75 @@ void setup() {
 
 void loop(){
   
-  
-   while (1){
+   int pixel = 0;
+   
+   for (int pos=0; pos<256; pos++){
      
-      uint32_t maxb = 128;
+      
+      
+      uint32_t maxb = 255;
      
-      for (uint32_t color=0; color < 24; color += 8){
+      for (uint32_t i=0; i<4; i++){
         
-         Serial.print("color: ");
-         Serial.println(color);
+         uint32_t color = Wheel(pos);
+         uint32_t adjColor = adjustBrightness(color, i);
          
-         for (uint32_t i=0; i<maxb; i++){
-        
-            Serial.println(i);
-            
-            uint32_t gamma_corrected = pgm_read_byte(&gamma[i]);
-            
-            strip.setPixelColor(49, gamma_corrected << color);
+         strip.setPixelColor(pixel++, adjColor);
             //strip.setPixelColor(1, i, 0, 0);
-            strip.show();
-            delay(10);
+         strip.show();
+         delay(100);
          
-         }
-      
-         delay(600);
-      
-         for (uint32_t i=maxb; i>0; i--){
-       
-            Serial.println(i);
-            
-            uint32_t gamma_corrected = pgm_read_byte(&gamma[i]);
-           
-            strip.setPixelColor(49, gamma_corrected << color);
-            strip.show();
-            delay(25);
-         
-         }
-      
-         delay(3000);
+         if (pixel > 99                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      ){
+            pixel = 0;
+            }
+
+//         Serial.println(pixel);
+//         Serial.println(color);
+         Serial.print("adj bright: ");
+         Serial.println(adjColor);
+
       }
+      
+  //       delay(3000);
+      
 
    }
    
 }
 
+uint32_t adjustBrightness(uint32_t color, uint32_t shift){
+ 
+   Serial.print("shift: ");
+   Serial.println(shift);
+   
+   uint32_t new_red = ((color >> 16)  & 0xFF) >> shift;
+   uint32_t new_grn = ((color >> 8)  & 0xFF) >> shift;
+   uint32_t new_blu = (color & 0xFF) >> shift;
 
+   Serial.print("red: ");
+   Serial.println(((color >> 16)  & 0xFF));
+   Serial.print("new_red: ");
+   Serial.println(new_red<<16);
+   
+   return (new_red << 16) + (new_grn << 8) + new_blu;
+   
+  
+  
+}
+
+// Input a value 0 to 255 to get a color value.
+// The colours are a transition r - g - b - back to r.
+uint32_t Wheel(byte WheelPos) {
+  if(WheelPos < 85) {
+   return strip.Color(pgm_read_byte(&gamma[WheelPos * 3]), pgm_read_byte(&gamma[255 - WheelPos * 3]), 0);
+  } else if(WheelPos < 170) {
+   WheelPos -= 85;
+   return strip.Color(pgm_read_byte(&gamma[255 - WheelPos * 3]), 0, pgm_read_byte(&gamma[WheelPos * 3]));
+  } else {
+   WheelPos -= 170;
+   return strip.Color(0, pgm_read_byte(&gamma[WheelPos * 3]), pgm_read_byte(&gamma[255 - WheelPos * 3]));
+  }
+}
 
 
 const uint8_t PROGMEM gamma[] = {

@@ -10,7 +10,9 @@
 //   NEO_KHZ400  400 KHz (classic 'v1' (not v2) FLORA pixels, WS2811 drivers)
 //   NEO_GRB     Pixels are wired for GRB bitstream (most NeoPixel products)
 //   NEO_RGB     Pixels are wired for RGB bitstream (v1 FLORA pixels, not v2)
-Adafruit_NeoPixel strip = Adafruit_NeoPixel(50, PIN, NEO_BRG + NEO_KHZ800);
+//   NEO_BRG 
+Adafruit_NeoPixel strip = Adafruit_NeoPixel(50, PIN, NEO_RGB + NEO_KHZ800);
+Adafruit_NeoPixel strip2 = Adafruit_NeoPixel(50, 5, NEO_BRG + NEO_KHZ800);
 
 // IMPORTANT: To reduce NeoPixel burnout risk, add 1000 uF capacitor across
 // pixel power leads, add 300 - 500 Ohm resistor on first pixel's data input
@@ -18,15 +20,24 @@ Adafruit_NeoPixel strip = Adafruit_NeoPixel(50, PIN, NEO_BRG + NEO_KHZ800);
 // on a live circuit...if you must, connect GND first.
 
 void setup() {
+  analogWrite(9,0);
+  analogWrite(10,64);
+  analogWrite(11,0);
+  
+  
   strip.begin();
   strip.show(); // Initialize all pixels to 'off'
   strip.setBrightness(64);
+  
+  strip2.begin();
+  strip2.show();
+  strip2.setBrightness(64);
   
   for (unsigned int i=0; i<strip.numPixels(); i++){
     strip.setPixelColor(i, 0);
   }
   
-  Serial.begin(9600);
+  Serial.begin(115200);
   
 }
 
@@ -35,7 +46,8 @@ uint32_t led_color = strip.Color(0,64,255);
 
 
 void loop() {
-   
+
+/*  
    for (unsigned int i=19; i<strip.numPixels(); i++){
       
       strip.setPixelColor(i, led_color);
@@ -61,7 +73,9 @@ void loop() {
       check_serial();  
 
    }
-   
+*/
+
+  check_serial();
   
 }
 
@@ -122,7 +136,19 @@ void check_serial(){
         Serial.println(readString);
       }
       
+      
+    // update all pixels to the new color  
+    for (unsigned int i=0; i<strip.numPixels(); i++){
+        strip.setPixelColor(i, led_color);
+        strip.show();
+    }
 
+    for (unsigned int i=0; i<strip2.numPixels(); i++){
+        strip2.setPixelColor(i, led_color);
+        strip2.show();
+    }
+    
+    setPWMColor(10, 9, 11, led_color);
 
     readString="";
   } 
@@ -130,3 +156,25 @@ void check_serial(){
   
 }
 
+
+void setPWMColor(byte redPin, byte greenPin, byte bluePin, uint32_t newColor){
+ 
+   byte redValue = (newColor >> 16)  & 255;
+   byte greenValue = (newColor >> 8) & 255;
+   byte blueValue = newColor & 255;
+   
+   Serial.print("red: ");
+   Serial.println(redValue);
+   Serial.print("green: ");
+   Serial.println(greenValue);
+   Serial.print("blue: ");
+   Serial.println(blueValue);
+ 
+   analogWrite(redPin, redValue);
+   analogWrite(greenPin, greenValue);
+   analogWrite(bluePin, blueValue);
+  
+  
+}
+  
+  
