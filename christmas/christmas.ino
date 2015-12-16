@@ -1,6 +1,7 @@
 #include <Adafruit_NeoPixel.h>
 
 
+
 #define PIN 5
 
 // Parameter 1 = number of pixels in strip
@@ -17,13 +18,51 @@ Adafruit_NeoPixel strip = Adafruit_NeoPixel(50, PIN, NEO_BRG + NEO_KHZ800);
 #define PIXEL_BG2_COLOR strip.Color(255,0,0)
 
 
+int ledR = 9;
+int ledG = 11;
+int ledB = 10;
+
+int flashDuration = 200;
+
+/*
+
+PINS:
+  3 - side of garege
+  5 - front of garage
+  6 - side of living room/front door
+  
+  9 - red
+  10 - blue
+  11 - green
+  
+
+
+
+*/
+
+
+
 void setup() {
+  Serial.begin(115200);
+ 
+  pinMode(ledR, OUTPUT);
+  pinMode(ledG, OUTPUT);
+  pinMode(ledB, OUTPUT);  
+  pinMode(3, OUTPUT);  
+  
+  
+  pinMode(13, OUTPUT);
+  digitalWrite(13,LOW);
+
+  pinMode(2, OUTPUT);
+  digitalWrite(2,HIGH);
+  
+  pinMode(4,OUTPUT);
+  digitalWrite(4, LOW);
 
 
-   pinMode(0, OUTPUT);
-
-   
-   Serial.begin(115200);
+   // set eves to red. 
+   analogWrite(9, 128);
 
 
    strip.begin();
