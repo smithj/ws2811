@@ -1,0 +1,6 @@
+{
+    "terminal.integrated.env.linux": {
+        "PATH": "/home/james/.platformio/penv/bin:/home/james/.platformio/penv:/home/james/bin:/home/james/Android/Sdk/tools:/home/james/bin:/home/james/google-cloud-sdk/bin:/home/james/.sdkman/candidates/gradle/current/bin:/home/james/bin:/home/james/Android/Sdk/tools:/home/james/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/home/james/.dotnet/tools:/opt/puppetlabs/bin:/home/james/.dotnet/tools",
+        "PLATFORMIO_CALLER": "vscode"
+    }
+}

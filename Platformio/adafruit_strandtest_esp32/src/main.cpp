@@ -1,6 +1,8 @@
+#include <Arduino.h>
 #include <Adafruit_NeoPixel.h>
 
-#define PIN 8
+
+#define PIN 8 // 17
 
 // Parameter 1 = number of pixels in strip
 // Parameter 2 = Arduino pin number (most are valid)
@@ -9,12 +11,32 @@
 //   NEO_KHZ400  400 KHz (classic 'v1' (not v2) FLORA pixels, WS2811 drivers)
 //   NEO_GRB     Pixels are wired for GRB bitstream (most NeoPixel products)
 //   NEO_RGB     Pixels are wired for RGB bitstream (v1 FLORA pixels, not v2)
-Adafruit_NeoPixel strip = Adafruit_NeoPixel(64, PIN, NEO_BRG + NEO_KHZ400);
+Adafruit_NeoPixel strip = Adafruit_NeoPixel(64, PIN, NEO_BRG + NEO_KHZ800);
 
 // IMPORTANT: To reduce NeoPixel burnout risk, add 1000 uF capacitor across
 // pixel power leads, add 300 - 500 Ohm resistor on first pixel's data input
 // and minimize distance between Arduino and first pixel.  Avoid connecting
 // on a live circuit...if you must, connect GND first.
+
+
+
+
+
+
+
+void colorWipe(uint32_t c, uint8_t wait);
+void rainbow(uint8_t wait);
+void rainbowCycle(uint8_t wait);
+void theaterChase(uint32_t c, uint8_t wait);
+void theaterChaseRainbow(uint8_t wait);
+uint32_t Wheel(byte WheelPos);
+
+
+
+
+
+
+
 
 void setup() {
   strip.begin();
@@ -24,25 +46,30 @@ void setup() {
   for (int i=0; i<strip.numPixels(); i++){
     strip.setPixelColor(i, 0);
   }
-  
-  
+
+  Serial.begin(9600);
 }
 
 void loop() {
+
+  Serial.println("loop start");
+
   // Some example procedures showing how to display to the pixels:
   colorWipe(strip.Color(255, 0, 0), 500); // Red
   colorWipe(strip.Color(0, 255, 0), 500); // Green
   colorWipe(strip.Color(0, 0, 255), 500); // Blue
-  // Send a theater pixel chase in...
+  // // Send a theater pixel chase in...
 
-  theaterChase(strip.Color(127, 127, 127), 50); // White
-  theaterChase(strip.Color(127,   0,   0), 50); // Red
-  theaterChase(strip.Color(  0,   0, 127), 50); // Blue
+  // theaterChase(strip.Color(127, 127, 127), 50); // White
+  // theaterChase(strip.Color(127,   0,   0), 50); // Red
+  // theaterChase(strip.Color(  0,   0, 127), 50); // Blue
 
-  rainbow(20);
-  rainbowCycle(20);
+  // rainbow(20);
+  // rainbowCycle(20);
 
-  theaterChaseRainbow(50);
+  // theaterChaseRainbow(50);
+
+  Serial.println("loops done");
 }
 
 // Fill the dots one after the other with a color
@@ -128,3 +155,4 @@ uint32_t Wheel(byte WheelPos) {
    return strip.Color(0, WheelPos * 3, 255 - WheelPos * 3);
   }
 }
+
